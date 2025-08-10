@@ -42,7 +42,7 @@ app.get("/escolas", (req, res) => {
 
   try {
     fs.createReadStream(csvPath)
-      .pipe(csv({ separator: ";" }))
+      .pipe(csv())
       .on("data", (row) => {
         const atende =
           (!municipio || row["NO_MUNICIPIO"]?.toUpperCase() === municipio) &&
@@ -90,7 +90,7 @@ app.get("/opcoes", (req, res) => {
   }
 
   fs.createReadStream(csvPath)
-    .pipe(csv({ separator: ";" }))
+    .pipe(csv())
     .on("data", (row) => {
       municipios.add(row["NO_MUNICIPIO"]);
       redes.add(row["TP_DEPENDENCIA"]);
