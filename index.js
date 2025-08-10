@@ -25,6 +25,6 @@ app.get("/escolas", (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
+app.listen(port, () => {
   console.log(`API rodando na porta ${port}`);
 });
