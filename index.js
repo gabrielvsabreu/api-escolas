@@ -21,10 +21,13 @@ app.get("/escolas", (req, res) => {
     })
     .on("error", (err) => {
       console.error("Erro ao ler CSV:", err.message);
-      res.status(500).send("Erro ao ler o arquivo CSV");
     });
 });
 
 app.listen(port, "0.0.0.0", () => {
   console.log(`API rodando na porta ${port}`);
+});
+
+app.get("/", (req, res) => {
+  res.send("API está viva!");
 });
