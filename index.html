@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Escolas de SC</title>
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🔍 Consulta de Escolas de SC</h1>
+
+    <label>Município:</label>
+    <select id="municipio"></select>
+
+    <label>Rede:</label>
+    <select id="rede"></select>
+
+    <label>Etapa:</label>
+    <select id="etapa"></select>
+
+    <button onclick="buscar()">Buscar</button>
+
+    <table id="tabela">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Município</th>
+          <th>Rede</th>
+          <th>Etapa</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script>
+      async function buscar() {
+        const municipio = document.getElementById("municipio").value;
+        const rede = document.getElementById("rede").value;
+        const etapa = document.getElementById("etapa").value;
+
+        const url =
+          `https://api-escolas-production.up.railway.app/escolas?limit=50` +
+          (municipio ? `&municipio=${municipio}` : "") +
+          (rede ? `&rede=${rede}` : "") +
+          (etapa ? `&etapa=${etapa}` : "");
+
+        const res = await fetch(url);
+        const dados = await res.json();
+
+        const tbody = document.querySelector("#tabela tbody");
+        tbody.innerHTML = "";
+
+        dados.forEach((escola) => {
+          const linha = `<tr>
+          <td>${escola["NOME_ESCOLA"]}</td>
+          <td>${escola["NOME_MUNICIPIO"]}</td>
+          <td>${escola["DEPENDENCIA_ADM"]}</td>
+          <td>${escola["ETAPA_ENSINO"]}</td>
+        </tr>`;
+          tbody.innerHTML += linha;
+        });
+      }
+
+      async function carregarOpcoes() {
+        const res = await fetch(
+          "https://api-escolas-production.up.railway.app/opcoes"
+        );
+        const dados = await res.json();
+
+        preencherSelect("municipio", dados.municipios);
+        preencherSelect("rede", dados.redes);
+        preencherSelect("etapa", dados.etapas);
+      }
+
+      function preencherSelect(id, opcoes) {
+        const select = document.getElementById(id);
+        select.innerHTML = `<option value="">Todas</option>`;
+        opcoes.forEach((opcao) => {
+          select.innerHTML += `<option value="${opcao}">${opcao}</option>`;
+        });
+      }
+
+      carregarOpcoes();
+    </script>
+  </body>
+</html>

@@ -79,3 +79,33 @@ app.get("/escolas", (req, res) => {
 app.listen(port, "0.0.0.0", () => {
   console.log(`✅ API rodando na porta ${port}`);
 });
+
+app.get("/opcoes", (req, res) => {
+  const municipios = new Set();
+  const redes = new Set();
+  const etapas = new Set();
+
+  const csvPath = path.resolve(__dirname, "microdados_ed_basica_2024.csv");
+
+  if (!fs.existsSync(csvPath)) {
+    return res.status(500).json({ error: "Arquivo CSV não encontrado" });
+  }
+
+  fs.createReadStream(csvPath)
+    .pipe(csv({ separator: ";" }))
+    .on("data", (row) => {
+      municipios.add(row["NOME_MUNICIPIO"]);
+      redes.add(row["DEPENDENCIA_ADM"]);
+      etapas.add(row["ETAPA_ENSINO"]);
+    })
+    .on("end", () => {
+      res.json({
+        municipios: Array.from(municipios).sort(),
+        redes: Array.from(redes).sort(),
+        etapas: Array.from(etapas).sort(),
+      });
+    })
+    .on("error", (err) => {
+      res.status(500).json({ error: "Erro ao ler CSV" });
+    });
+});
