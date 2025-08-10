@@ -1,17 +1,28 @@
 const express = require("express");
 const csv = require("csv-parser");
 const fs = require("fs");
-const app = express();
+const path = require("path");
 
-const port = process.env.PORT || 3000;
+const app = express();
+const port = process.env.PORT || 8080;
+
+app.get("/", (req, res) => {
+  res.send("API está viva!");
+});
 
 app.get("/escolas", (req, res) => {
   const results = [];
   const limit = parseInt(req.query.limit) || 100;
+  const csvPath = path.resolve(__dirname, "microdados_ed_basica_2024.csv");
 
-  console.log("Tentando abrir o arquivo CSV...");
+  if (!fs.existsSync(csvPath)) {
+    console.error("Arquivo CSV não encontrado:", csvPath);
+    return res
+      .status(500)
+      .json({ error: "Arquivo CSV não encontrado no servidor" });
+  }
 
-  fs.createReadStream("microdados_ed_basica_2024.csv")
+  fs.createReadStream(csvPath)
     .pipe(csv({ separator: ";" }))
     .on("data", (row) => {
       if (results.length < limit) {
@@ -29,8 +40,4 @@ app.get("/escolas", (req, res) => {
 
 app.listen(port, "0.0.0.0", () => {
   console.log(`API rodando na porta ${port}`);
-});
-
-app.get("/", (req, res) => {
-  res.send("API está viva!");
 });
