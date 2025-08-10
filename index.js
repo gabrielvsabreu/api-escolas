@@ -47,13 +47,9 @@ app.get("/escolas", (req, res) => {
         const atende =
           (!municipio || row["NO_MUNICIPIO"]?.toUpperCase() === municipio) &&
           (!rede || row["TP_DEPENDENCIA"]?.toUpperCase() === rede) &&
-          (!etapa ||
-            row["TP_ATIVIDADE_COMPLEMENTAR"]?.toUpperCase() === etapa) &&
+          (!etapa || row["TP_CATEGORIA_ESCOLA"]?.toUpperCase() === etapa) &&
           (!localizacao ||
-            row["TP_LOCALIZACAO"]?.toUpperCase() === localizacao) &&
-          parseInt(row["QT_MAT_BAS"]) >= minAlunos &&
-          (!biblioteca || row["IN_BIBLIOTECA"] === "1") &&
-          (!internet || row["IN_INTERNET"] === "1");
+            row["TP_LOCALIZACAO"]?.toUpperCase() === localizacao);
 
         if (atende && results.length < limit) {
           results.push(row);
@@ -94,7 +90,7 @@ app.get("/opcoes", (req, res) => {
     .on("data", (row) => {
       municipios.add(row["NO_MUNICIPIO"]);
       redes.add(row["TP_DEPENDENCIA"]);
-      etapas.add(row["TP_ATIVIDADE_COMPLEMENTAR"]); // ou outro campo que represente a etapa
+      etapas.add(row["TP_CATEGORIA_ESCOLA"]); // ou outro campo que represente a etapa
     })
     .on("end", () => {
       res.json({
