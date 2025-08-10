@@ -11,14 +11,24 @@ app.get("/", (req, res) => {
   res.send("API está viva!");
 });
 
-// 📊 Rota principal: leitura do CSV
+// 📊 Rota principal com filtros
 app.get("/escolas", (req, res) => {
   const results = [];
   const limit = parseInt(req.query.limit) || 100;
 
+  // Filtros da query string
+  const municipio = req.query.municipio?.toUpperCase();
+  const rede = req.query.rede?.toUpperCase();
+  const etapa = req.query.etapa?.toUpperCase();
+  const modalidade = req.query.modalidade?.toUpperCase();
+  const localizacao = req.query.localizacao?.toUpperCase();
+  const turno = req.query.turno?.toUpperCase();
+  const minAlunos = parseInt(req.query.minAlunos) || 0;
+  const biblioteca = req.query.biblioteca === "true";
+  const internet = req.query.internet === "true";
+
   const csvPath = path.resolve(__dirname, "microdados_ed_basica_2024.csv");
 
-  // Verifica se o arquivo existe
   if (!fs.existsSync(csvPath)) {
     console.error("❌ Arquivo CSV não encontrado:", csvPath);
     return res
@@ -32,7 +42,20 @@ app.get("/escolas", (req, res) => {
     fs.createReadStream(csvPath)
       .pipe(csv({ separator: ";" }))
       .on("data", (row) => {
-        if (results.length < limit) {
+        // Aplica os filtros
+        const atende =
+          (!municipio || row["NOME_MUNICIPIO"]?.toUpperCase() === municipio) &&
+          (!rede || row["DEPENDENCIA_ADM"]?.toUpperCase() === rede) &&
+          (!etapa || row["ETAPA_ENSINO"]?.toUpperCase() === etapa) &&
+          (!modalidade ||
+            row["MODALIDADE_ENSINO"]?.toUpperCase() === modalidade) &&
+          (!localizacao || row["LOCALIZACAO"]?.toUpperCase() === localizacao) &&
+          (!turno || row["TURNO_FUNCIONAMENTO"]?.toUpperCase() === turno) &&
+          parseInt(row["NUM_ALUNOS"]) >= minAlunos &&
+          (!biblioteca || row["BIBLIOTECA"]?.toUpperCase() === "SIM") &&
+          (!internet || row["INTERNET"]?.toUpperCase() === "SIM");
+
+        if (atende && results.length < limit) {
           results.push(row);
         }
       })
