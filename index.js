@@ -20,9 +20,7 @@ app.get("/escolas", (req, res) => {
   const municipio = req.query.municipio?.toUpperCase();
   const rede = req.query.rede?.toUpperCase();
   const etapa = req.query.etapa?.toUpperCase();
-  const modalidade = req.query.modalidade?.toUpperCase();
   const localizacao = req.query.localizacao?.toUpperCase();
-  const turno = req.query.turno?.toUpperCase();
   const minAlunos = parseInt(req.query.minAlunos) || 0;
   const biblioteca = req.query.biblioteca === "true";
   const internet = req.query.internet === "true";
@@ -42,18 +40,16 @@ app.get("/escolas", (req, res) => {
     fs.createReadStream(csvPath)
       .pipe(csv({ separator: ";" }))
       .on("data", (row) => {
-        // Aplica os filtros
         const atende =
-          (!municipio || row["NOME_MUNICIPIO"]?.toUpperCase() === municipio) &&
-          (!rede || row["DEPENDENCIA_ADM"]?.toUpperCase() === rede) &&
-          (!etapa || row["ETAPA_ENSINO"]?.toUpperCase() === etapa) &&
-          (!modalidade ||
-            row["MODALIDADE_ENSINO"]?.toUpperCase() === modalidade) &&
-          (!localizacao || row["LOCALIZACAO"]?.toUpperCase() === localizacao) &&
-          (!turno || row["TURNO_FUNCIONAMENTO"]?.toUpperCase() === turno) &&
-          parseInt(row["NUM_ALUNOS"]) >= minAlunos &&
-          (!biblioteca || row["BIBLIOTECA"]?.toUpperCase() === "SIM") &&
-          (!internet || row["INTERNET"]?.toUpperCase() === "SIM");
+          (!municipio || row["NO_MUNICIPIO"]?.toUpperCase() === municipio) &&
+          (!rede || row["TP_DEPENDENCIA"]?.toUpperCase() === rede) &&
+          (!etapa ||
+            row["TP_ATIVIDADE_COMPLEMENTAR"]?.toUpperCase() === etapa) &&
+          (!localizacao ||
+            row["TP_LOCALIZACAO"]?.toUpperCase() === localizacao) &&
+          parseInt(row["QT_MAT_BAS"]) >= minAlunos &&
+          (!biblioteca || row["IN_BIBLIOTECA"] === "1") &&
+          (!internet || row["IN_INTERNET"] === "1");
 
         if (atende && results.length < limit) {
           results.push(row);
@@ -75,11 +71,7 @@ app.get("/escolas", (req, res) => {
   }
 });
 
-// 🚀 Inicializa o servidor
-app.listen(port, "0.0.0.0", () => {
-  console.log(`✅ API rodando na porta ${port}`);
-});
-
+// 📋 Rota para preencher os selects
 app.get("/opcoes", (req, res) => {
   const municipios = new Set();
   const redes = new Set();
@@ -94,9 +86,9 @@ app.get("/opcoes", (req, res) => {
   fs.createReadStream(csvPath)
     .pipe(csv({ separator: ";" }))
     .on("data", (row) => {
-      municipios.add(row["NOME_MUNICIPIO"]);
-      redes.add(row["DEPENDENCIA_ADM"]);
-      etapas.add(row["ETAPA_ENSINO"]);
+      municipios.add(row["NO_MUNICIPIO"]);
+      redes.add(row["TP_DEPENDENCIA"]);
+      etapas.add(row["TP_ATIVIDADE_COMPLEMENTAR"]); // ou outro campo que represente a etapa
     })
     .on("end", () => {
       res.json({
@@ -108,4 +100,9 @@ app.get("/opcoes", (req, res) => {
     .on("error", (err) => {
       res.status(500).json({ error: "Erro ao ler CSV" });
     });
+});
+
+// 🚀 Inicializa o servidor
+app.listen(port, "0.0.0.0", () => {
+  console.log(`✅ API rodando na porta ${port}`);
 });
