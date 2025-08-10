@@ -3,7 +3,7 @@ const csv = require("csv-parser");
 const fs = require("fs");
 const app = express();
 
-const PORT = 3000;
+const port = process.env.PORT || 3000;
 
 app.get("/escolas", (req, res) => {
   const results = [];
@@ -26,5 +26,5 @@ app.get("/escolas", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`API rodando em http://localhost:${PORT}`);
+  console.log(`API rodando na porta ${port}`);
 });
