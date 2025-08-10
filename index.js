@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 // 📊 Rota principal com filtros
 app.get("/escolas", (req, res) => {
   const results = [];
-  const limit = parseInt(req.query.limit) || 100;
+  const limit = parseInt(req.query.limit);
 
   // Filtros da query string
   const municipio = req.query.municipio?.toUpperCase();
@@ -51,7 +51,7 @@ app.get("/escolas", (req, res) => {
           (!localizacao ||
             row["TP_LOCALIZACAO"]?.toUpperCase() === localizacao);
 
-        if (atende && results.length < limit) {
+        if (atende) {
           results.push(row);
         }
       })
