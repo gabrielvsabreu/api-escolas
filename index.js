@@ -1,9 +1,13 @@
+const cors = require("cors");
 const express = require("express");
 const csv = require("csv-parser");
 const fs = require("fs");
 const path = require("path");
 
 const app = express();
+
+app.use(cors());
+
 const port = process.env.PORT || 8080;
 
 // 🟢 Rota de teste
@@ -25,7 +29,7 @@ app.get("/escolas", (req, res) => {
   const biblioteca = req.query.biblioteca === "true";
   const internet = req.query.internet === "true";
 
-  const csvPath = path.resolve(__dirname, "microdados_ed_basica_2024.csv");
+  const csvPath = path.resolve(__dirname, "senso-escolar-blumenau-2024.csv");
 
   if (!fs.existsSync(csvPath)) {
     console.error("❌ Arquivo CSV não encontrado:", csvPath);
@@ -73,11 +77,13 @@ app.get("/escolas", (req, res) => {
 
 // 📋 Rota para preencher os selects
 app.get("/opcoes", (req, res) => {
+  console.log("🔍 Rota /opcoes acessada");
+
   const municipios = new Set();
   const redes = new Set();
   const etapas = new Set();
 
-  const csvPath = path.resolve(__dirname, "microdados_ed_basica_2024.csv");
+  const csvPath = path.resolve(__dirname, "senso-escolar-blumenau-2024.csv");
 
   if (!fs.existsSync(csvPath)) {
     return res.status(500).json({ error: "Arquivo CSV não encontrado" });
