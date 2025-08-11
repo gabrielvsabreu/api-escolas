@@ -55,7 +55,9 @@
 
     <script>
       async function carregarOpcoes() {
-        const res = await fetch("http://localhost:8080/opcoes");
+        const res = await fetch(
+          "https://api-escolas-production.up.railway.app/opcoes"
+        );
         const dados = await res.json();
 
         preencherSelect("municipio", dados.municipios);
@@ -74,7 +76,7 @@
         const municipio = document.getElementById("municipio").value;
         const rede = document.getElementById("rede").value;
 
-        let url = "http://localhost:8080/escolas";
+        let url = "https://api-escolas-production.up.railway.app/escolas";
         const params = [];
 
         if (municipio) params.push(`municipio=${municipio}`);
