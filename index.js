@@ -42,7 +42,7 @@ app.get("/escolas", (req, res) => {
   const edInfantil = req.query.edInfantil === "true";
   const edFundamental = req.query.edFundamental === "true";
   const edMedio = req.query.edMedio === "true";
-  const edProficional = req.query.edProfissional === "true";
+  const edProfissional = req.query.edProfissional === "true";
   const edEJA = req.query.edEJA === "true";
   const edEspecial = req.query.edEspecial === "true";
 
@@ -75,7 +75,7 @@ app.get("/escolas", (req, res) => {
           (labInfo ? row["LABORATORIO_INFORMATICA"] === "Sim" : true) &&
           (patioCoberto ? row["PATIO_COBERTO"] === "Sim" : true) &&
           (parqueInfantil ? row["PARQUE_INFANTIL"] === "Sim" : true) &&
-          (quadraEsportes ? row["QUADRA_ESPORTES"] === "Sim" : true) &&
+          (quadraEsporte ? row["QUADRA_ESPORTES"] === "Sim" : true) &&
           (refeitorio ? row["REFEITORIO"] === "Sim" : true) &&
           (recursosAccessibilidade
             ? row["RECURSOS_ACESSIBILIDADE"] === "Sim"
@@ -85,7 +85,7 @@ app.get("/escolas", (req, res) => {
           (edInfantil ? row["ED_INF"] === "Sim" : true) &&
           (edFundamental ? row["ED_FUND"] === "Sim" : true) &&
           (edMedio ? row["ED_MED"] === "Sim" : true) &&
-          (edProficional ? row["ED_PROF"] === "Sim" : true) &&
+          (edProfissional ? row["ED_PROF"] === "Sim" : true) &&
           (edEJA ? row["ED_EJA"] === "Sim" : true) &&
           (edEspecial ? row["ED_ESP"] === "Sim" : true);
 
