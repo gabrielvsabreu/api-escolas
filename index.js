@@ -72,7 +72,7 @@ app.get("/escolas", (req, res) => {
           (auditorio ? row["AUDITORIO"] === "Sim" : true) &&
           (banheiroPNE ? row["BANHEIRO_PNE"] === "Sim" : true) &&
           (biblioteca ? row["BIBLIOTECA"] === "Sim" : true) &&
-          (labInfo ? row["IN_LABORATORIO_INFORMATICA"] === "Sim" : true) &&
+          (labInfo ? row["LABORATORIO_INFORMATICA"] === "Sim" : true) &&
           (patioCoberto ? row["PATIO_COBERTO"] === "Sim" : true) &&
           (parqueInfantil ? row["PARQUE_INFANTIL"] === "Sim" : true) &&
           (quadraEsportes ? row["QUADRA_ESPORTES"] === "Sim" : true) &&
@@ -132,9 +132,9 @@ app.get("/opcoes", (req, res) => {
     })
     .on("end", () => {
       res.json({
-        dependencias: Array.from(dependencias).sort(),
-        categorias: Array.from(categorias).sort(),
-        localizacoes: Array.from(localizacoes).sort(),
+        dependencias: Array.from(dependencia).sort(),
+        categorias: Array.from(categoria).sort(),
+        localizacoes: Array.from(localizacao).sort(),
       });
     })
     .on("error", (err) => {
