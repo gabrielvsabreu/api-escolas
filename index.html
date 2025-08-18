@@ -2,7 +2,7 @@
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
-    <title>Consulta de Escolas de SC</title>
+    <title>Consulta de Escolas - Blumenau</title>
     <style>
       body {
         font-family: Arial;
@@ -31,13 +31,13 @@
     </style>
   </head>
   <body>
-    <h1>Consulta de Escolas | Blumenau e região</h1>
+    <h1>Consulta de Escolas em Blumenau</h1>
 
-    <label>Município:</label>
-    <select id="municipio"></select>
+    <label>Dependencia:</label>
+    <select id="dependencia"></select>
 
-    <label>Rede:</label>
-    <select id="rede"></select>
+    <label>Categoria:</label>
+    <select id="categoria"></select>
 
     <button onclick="buscar()">Buscar</button>
 
@@ -45,9 +45,9 @@
       <thead>
         <tr>
           <th>Nome da Escola</th>
-          <th>Município</th>
-          <th>Rede</th>
+          <th>Dependencia</th>
           <th>Categoria</th>
+          <th>Localizacao</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -60,8 +60,8 @@
         );
         const dados = await res.json();
 
-        preencherSelect("municipio", dados.municipios);
-        preencherSelect("rede", dados.redes);
+        preencherSelect("dependencia", dados.dependencias);
+        preencherSelect("categoria", dados.categorias);
       }
 
       function preencherSelect(id, opcoes) {
@@ -73,14 +73,14 @@
       }
 
       async function buscar() {
-        const municipio = document.getElementById("municipio").value;
-        const rede = document.getElementById("rede").value;
+        const dependencia = document.getElementById("dependencia").value;
+        const categoria = document.getElementById("categoria").value;
 
         let url = "https://api-escolas-production.up.railway.app/escolas";
         const params = [];
 
-        if (municipio) params.push(`municipio=${municipio}`);
-        if (rede) params.push(`rede=${rede}`);
+        if (dependencia) params.push(`dependencia=${dependencia}`);
+        if (categoria) params.push(`categoria=${categoria}`);
 
         if (params.length > 0) {
           url += "?" + params.join("&");
@@ -94,10 +94,10 @@
 
         dados.forEach((escola) => {
           const linha = `<tr>
-          <td>${escola["NO_ENTIDADE"]}</td>
-          <td>${escola["NO_MUNICIPIO"]}</td>
-          <td>${escola["TP_DEPENDENCIA"]}</td>
-          <td>${escola["TP_CATEGORIA_ESCOLA"]}</td>
+          <td>${escola["ESCOLA"]}</td>
+          <td>${escola["DEPENDENCIA"]}</td>
+          <td>${escola["CATEGORIA"]}</td>
+          <td>${escola["LOCALIZACAO"]}</td>
         </tr>`;
           tbody.innerHTML += linha;
         });

@@ -21,13 +21,30 @@ app.get("/escolas", (req, res) => {
   const limit = parseInt(req.query.limit);
 
   // Filtros da query string
-  const municipio = req.query.municipio?.toUpperCase();
-  const rede = req.query.rede?.toUpperCase();
+  const dependencia = req.query.dependencia?.toUpperCase();
   const categoria = req.query.categoria?.toUpperCase();
   const localizacao = req.query.localizacao?.toUpperCase();
-  const minAlunos = parseInt(req.query.minAlunos) || 0;
+  const endereco = req.query.endereco?.toUpperCase();
+  const cep = req.query.cep?.toUpperCase();
+  const telefone = req.query.telefone?.toUpperCase();
+  const areaVerde = req.query.areaVerde === "true";
+  const auditorio = req.query.auditorio === "true";
+  const banheiroPNE = req.query.banheiroPNE === "true";
   const biblioteca = req.query.biblioteca === "true";
-  const internet = req.query.internet === "true";
+  const labInfo = req.query.labInfo === "true";
+  const patioCoberto = req.query.patioCoberto === "true";
+  const parqueInfantil = req.query.parqueInfantil === "true";
+  const quadraEsporte = req.query.quadraEsporte === "true";
+  const refeitorio = req.query.refeitorio === "true";
+  const recursosAccessibilidade = req.query.recursosAccessibilidade === "true";
+  const internetAlunos = req.query.internetAlunos === "true";
+  const alimentacao = req.query.alimentacao === "true";
+  const edInfantil = req.query.edInfnatil === "true";
+  const edFundamental = req.query.edFundamental === "true";
+  const edMedio = req.query.edMedio === "true";
+  const edProficional = req.query.edProfissional === "true";
+  const edEJA = req.query.edEJA === "true";
+  const edEspecial = req.query.edEspecial === "true";
 
   const csvPath = path.resolve(__dirname, "senso-escolar-blumenau-2024.csv");
 
@@ -45,12 +62,32 @@ app.get("/escolas", (req, res) => {
       .pipe(csv())
       .on("data", (row) => {
         const atende =
-          (!municipio || row["NO_MUNICIPIO"]?.toUpperCase() === municipio) &&
-          (!rede || row["TP_DEPENDENCIA"]?.toUpperCase() === rede) &&
-          (!categoria ||
-            row["TP_CATEGORIA_ESCOLA"]?.toUpperCase() === categoria) &&
-          (!localizacao ||
-            row["TP_LOCALIZACAO"]?.toUpperCase() === localizacao);
+          (!dependencia || row["DEPENDENCIA"]?.toUpperCase() === dependencia) &&
+          (!categoria || row["CATEGORIA"]?.toUpperCase() === categoria) &&
+          (!localização || row["LOCALIZAÇÃO"]?.toUpperCase() === localização) &&
+          (!endereco || row["ENDERECO"]?.toUpperCase() === endereco) &&
+          (!cep || row["CEP"]?.toUpperCase() === cep) &&
+          (!telefone || row["TELEFONE"]?.toUpperCase() === telefone) &&
+          (areaVerde ? row["AREA_VERDE"] === "Sim" : true) &&
+          (auditorio ? row["AUDITORIO"] === "Sim" : true) &&
+          (banheiroPNE ? row["BANHEIRO_PNE"] === "Sim" : true) &&
+          (biblioteca ? row["BIBLIOTECA"] === "Sim" : true) &&
+          (labInfo ? row["IN_LABORATORIO_INFORMATICA"] === "Sim" : true) &&
+          (patioCoberto ? row["PATIO_COBERTO"] === "Sim" : true) &&
+          (parqueInfantil ? row["PARQUE_INFANTIL"] === "Sim" : true) &&
+          (quadraEsportes ? row["QUADRA_ESPORTES"] === "Sim" : true) &&
+          (refeitorio ? row["REFEITORIO"] === "Sim" : true) &&
+          (recursosAccessibilidade
+            ? row["RECURSOS_ACESSIBILIDADE"] === "Sim"
+            : true) &&
+          (internetAlunos ? row["INTERNET_ALUNOS"] === "Sim" : true) &&
+          (alimentacao ? row["ALIMENTACAO"] === "Sim" : true) &&
+          (edInfantil ? row["ED_INF"] === "Sim" : true) &&
+          (edFundamental ? row["ED_FUND"] === "Sim" : true) &&
+          (edMedio ? row["ED_MED"] === "Sim" : true) &&
+          (edProficional ? row["ED_PROF"] === "Sim" : true) &&
+          (edEJA ? row["ED_EJA"] === "Sim" : true) &&
+          (edEspecial ? row["ED_ESP"] === "Sim" : true);
 
         if (atende) {
           results.push(row);
@@ -76,9 +113,9 @@ app.get("/escolas", (req, res) => {
 app.get("/opcoes", (req, res) => {
   console.log("🔍 Rota /opcoes acessada");
 
-  const municipios = new Set();
-  const redes = new Set();
-  const categorias = new Set();
+  const dependencia = new Set();
+  const categoria = new Set();
+  const localizacao = new Set();
 
   const csvPath = path.resolve(__dirname, "senso-escolar-blumenau-2024.csv");
 
@@ -89,15 +126,15 @@ app.get("/opcoes", (req, res) => {
   fs.createReadStream(csvPath)
     .pipe(csv())
     .on("data", (row) => {
-      municipios.add(row["NO_MUNICIPIO"]);
-      redes.add(row["TP_DEPENDENCIA"]);
-      categorias.add(row["TP_CATEGORIA_ESCOLA"]);
+      dependencia.add(row["DEPENDENCIA"]);
+      categoria.add(row["CATEGORIA"]);
+      localizacao.add(row["LOCALIZACAO"]);
     })
     .on("end", () => {
       res.json({
-        municipios: Array.from(municipios).sort(),
-        redes: Array.from(redes).sort(),
+        dependencias: Array.from(dependencias).sort(),
         categorias: Array.from(categorias).sort(),
+        localizacoes: Array.from(localizacoes).sort(),
       });
     })
     .on("error", (err) => {
