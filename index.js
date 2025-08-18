@@ -24,7 +24,6 @@ app.get("/escolas", (req, res) => {
   const dependencia = req.query.dependencia?.toUpperCase();
   const categoria = req.query.categoria?.toUpperCase();
   const localizacao = req.query.localizacao?.toUpperCase();
-  /*
   const endereco = req.query.endereco?.toUpperCase();
   const cep = req.query.cep?.toUpperCase();
   const telefone = req.query.telefone?.toUpperCase();
@@ -40,13 +39,12 @@ app.get("/escolas", (req, res) => {
   const recursosAccessibilidade = req.query.recursosAccessibilidade === "true";
   const internetAlunos = req.query.internetAlunos === "true";
   const alimentacao = req.query.alimentacao === "true";
-  const edInfantil = req.query.edInfnatil === "true";
+  const edInfantil = req.query.edInfantil === "true";
   const edFundamental = req.query.edFundamental === "true";
   const edMedio = req.query.edMedio === "true";
   const edProficional = req.query.edProfissional === "true";
   const edEJA = req.query.edEJA === "true";
   const edEspecial = req.query.edEspecial === "true";
-  */
 
   const csvPath = path.resolve(__dirname, "senso-escolar-blumenau-2024.csv");
 
@@ -66,10 +64,7 @@ app.get("/escolas", (req, res) => {
         const atende =
           (!dependencia || row["DEPENDENCIA"]?.toUpperCase() === dependencia) &&
           (!categoria || row["CATEGORIA"]?.toUpperCase() === categoria) &&
-          (!localização || row["LOCALIZAÇÃO"]?.toUpperCase() === localização);
-          
-          /*
-          &&
+          (!localizacao || row["LOCALIZACAO"]?.toUpperCase() === localizacao) &&
           (!endereco || row["ENDERECO"]?.toUpperCase() === endereco) &&
           (!cep || row["CEP"]?.toUpperCase() === cep) &&
           (!telefone || row["TELEFONE"]?.toUpperCase() === telefone) &&
@@ -93,8 +88,6 @@ app.get("/escolas", (req, res) => {
           (edProficional ? row["ED_PROF"] === "Sim" : true) &&
           (edEJA ? row["ED_EJA"] === "Sim" : true) &&
           (edEspecial ? row["ED_ESP"] === "Sim" : true);
-
-          */
 
         if (atende) {
           results.push(row);
