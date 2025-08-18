@@ -24,6 +24,7 @@ app.get("/escolas", (req, res) => {
   const dependencia = req.query.dependencia?.toUpperCase();
   const categoria = req.query.categoria?.toUpperCase();
   const localizacao = req.query.localizacao?.toUpperCase();
+  /*
   const endereco = req.query.endereco?.toUpperCase();
   const cep = req.query.cep?.toUpperCase();
   const telefone = req.query.telefone?.toUpperCase();
@@ -45,6 +46,7 @@ app.get("/escolas", (req, res) => {
   const edProficional = req.query.edProfissional === "true";
   const edEJA = req.query.edEJA === "true";
   const edEspecial = req.query.edEspecial === "true";
+  */
 
   const csvPath = path.resolve(__dirname, "senso-escolar-blumenau-2024.csv");
 
@@ -64,7 +66,10 @@ app.get("/escolas", (req, res) => {
         const atende =
           (!dependencia || row["DEPENDENCIA"]?.toUpperCase() === dependencia) &&
           (!categoria || row["CATEGORIA"]?.toUpperCase() === categoria) &&
-          (!localização || row["LOCALIZAÇÃO"]?.toUpperCase() === localização) &&
+          (!localização || row["LOCALIZAÇÃO"]?.toUpperCase() === localização);
+          
+          /*
+          &&
           (!endereco || row["ENDERECO"]?.toUpperCase() === endereco) &&
           (!cep || row["CEP"]?.toUpperCase() === cep) &&
           (!telefone || row["TELEFONE"]?.toUpperCase() === telefone) &&
@@ -88,6 +93,8 @@ app.get("/escolas", (req, res) => {
           (edProficional ? row["ED_PROF"] === "Sim" : true) &&
           (edEJA ? row["ED_EJA"] === "Sim" : true) &&
           (edEspecial ? row["ED_ESP"] === "Sim" : true);
+
+          */
 
         if (atende) {
           results.push(row);
