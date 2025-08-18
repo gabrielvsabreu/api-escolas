@@ -23,7 +23,7 @@ app.get("/escolas", (req, res) => {
   // Filtros da query string
   const municipio = req.query.municipio?.toUpperCase();
   const rede = req.query.rede?.toUpperCase();
-  const etapa = req.query.etapa?.toUpperCase();
+  const categoria = req.query.categoria?.toUpperCase();
   const localizacao = req.query.localizacao?.toUpperCase();
   const minAlunos = parseInt(req.query.minAlunos) || 0;
   const biblioteca = req.query.biblioteca === "true";
@@ -47,7 +47,8 @@ app.get("/escolas", (req, res) => {
         const atende =
           (!municipio || row["NO_MUNICIPIO"]?.toUpperCase() === municipio) &&
           (!rede || row["TP_DEPENDENCIA"]?.toUpperCase() === rede) &&
-          (!etapa || row["TP_CATEGORIA_ESCOLA"]?.toUpperCase() === etapa) &&
+          (!categoria ||
+            row["TP_CATEGORIA_ESCOLA"]?.toUpperCase() === categoria) &&
           (!localizacao ||
             row["TP_LOCALIZACAO"]?.toUpperCase() === localizacao);
 
@@ -77,7 +78,7 @@ app.get("/opcoes", (req, res) => {
 
   const municipios = new Set();
   const redes = new Set();
-  const etapas = new Set();
+  const categorias = new Set();
 
   const csvPath = path.resolve(__dirname, "senso-escolar-blumenau-2024.csv");
 
@@ -90,13 +91,13 @@ app.get("/opcoes", (req, res) => {
     .on("data", (row) => {
       municipios.add(row["NO_MUNICIPIO"]);
       redes.add(row["TP_DEPENDENCIA"]);
-      etapas.add(row["TP_CATEGORIA_ESCOLA"]); // ou outro campo que represente a etapa
+      categorias.add(row["TP_CATEGORIA_ESCOLA"]);
     })
     .on("end", () => {
       res.json({
         municipios: Array.from(municipios).sort(),
         redes: Array.from(redes).sort(),
-        etapas: Array.from(etapas).sort(),
+        categorias: Array.from(categorias).sort(),
       });
     })
     .on("error", (err) => {
